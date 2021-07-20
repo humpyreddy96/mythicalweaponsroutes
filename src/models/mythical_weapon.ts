@@ -62,18 +62,18 @@ export class MythicalWeaponStore{
 
     async update(w: Weapon): Promise<Weapon> {
         try {
-      const sql = 'UPDATE mythical_weapons SET name = $1, type = $2, weight = $3 WHERE id = $4'
-      // @ts-ignore
-      const conn = await client.connect()
-  
-      const result = await conn
-          .query(sql, [w.name, w.type, w.weight,w.id])
-  
-      const weapon = result.rows[0]
-  
-      conn.release()
-  
-      return weapon
+            const sql ="UPDATE mythical_weapons set name=$1,type=$2,weight=$3 WHERE id=$4 RETURNING *;";      
+            // @ts-ignore
+            const conn = await client.connect()
+        
+            const result = await conn
+                .query(sql, [w.name, w.type, w.weight,w.id])
+        
+            const weapon = result.rows[0]
+        
+            conn.release()
+        
+            return weapon
         } catch (err) {
             throw new Error(`Could not add new weapon ${name}. Error: ${err}`)
         }
