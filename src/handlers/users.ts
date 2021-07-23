@@ -37,7 +37,7 @@ const authenticate = async(req:Request,res:Response)=>{
     try{
 
         const authenticate_user = await user_data.authenticate(user.username,user.password)
-        var token = jwt.sign({ user: authenticate_user }, process.env.TOKEN_SECRET!);
+        var token = jwt.sign({user:authenticate_user},process.env.TOKEN_SECRET!)
         res.json(token)
     }
     catch(err){
@@ -52,22 +52,25 @@ const update = async (req: Request, res: Response) => {
         username: req.body.username,
         password: req.body.password,
     }
-    try {
-        const authorizationHeader = req.headers.authorization!
-        const token = authorizationHeader.split(' ')[1]
-        const decoded = jwt.verify(token, process.env.TOKEN_SECRET!)
-        //@ts-ignore
-        if(decoded.id !== user.id) {
-            throw new Error('User id does not match!')
-        }
-    } catch(err) {
-        res.status(401)
-        res.json(err)
-        return
-    }
+    // try {
+    //     const authorizationHeader = req.headers.authorization!
+    //     const token = authorizationHeader.split(' ')[1]
+    //     console.log(token)
+
+    //     const decoded = jwt.verify(token, process.env.TOKEN_SECRET!)
+    //     //@ts-ignore
+    //     if(decoded.id !== user.id) {
+            
+    //         throw new Error('User id does not match!')
+    //     }
+    // } catch(err) {
+    //     res.status(401)
+    //     res.json(err)
+    //     return
+    // }
 
     try {
-        const updated = await user_data.create(user)
+        const updated = await user_data.update(user)
         res.json(updated)
     } catch(err) {
         res.status(400)

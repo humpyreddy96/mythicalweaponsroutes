@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt'
 import { isParameterPropertyDeclaration } from 'typescript'
 import client from '../database'
+import users_routes from '../handlers/users'
 
-const saltRounds:string= process.env.SALT_ROUNDS!
-const pepper = process.env.BCRYPT_PASSWORD
+const saltRounds= process.env.SALT_ROUNDS!
+const pepper = process.env.BCRYPT_PASSOWRD
 
 export type User = {
     id?:Number,
@@ -47,18 +48,36 @@ export class Users{
           } catch(err) {
             throw new Error(`unable create user (${u.username}): ${err}`)
           } 
-        }       
+        }  
+        
+    async update(u:User):Promise<User|null>{
+      try{
+        //@ts-ignore
+        const conn = await client.connect()
+        const sql = 'UPDATE users SET username=$1,password_digest=$2 WHERE id=$3 RETURNING *'
+
+        const hash = bcrypt.hashSync(
+          u.password + pepper,
+          parseInt(saltRounds)
+        );
+        console.log(u)
+        const result = await conn.query(sql,[u.username,hash,u.id])
+        const user = result.rows[0]
+        conn.release()
+        return user
+      }catch(err){
+        throw new Error(`unable to update user (${u.username}) : ${err}`)
+      }
+    }
         
         
 
         async authenticate(username: string, password: string): Promise<User | null> {
+
             const conn = await client.connect()
             const sql = 'SELECT password_digest FROM users WHERE username=($1)'
         
-            const result = await conn.query(sql, [username])
-        
-            console.log(password+pepper)
-        
+            const result = await conn.query(sql, [username])        
             if(result.rows.length) {
         
               const user = result.rows[0]
@@ -66,6 +85,7 @@ export class Users{
               console.log(user)
         
               if (bcrypt.compareSync(password+pepper, user.password_digest)) {
+                console.log('authenticated')
                 return user
               }
             }
