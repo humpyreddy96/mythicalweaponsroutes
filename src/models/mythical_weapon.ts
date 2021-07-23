@@ -20,7 +20,7 @@ export class MythicalWeaponStore{
             return result.rows
     
         }catch(err){
-            throw new Error(`Cannot get wepaons ${err}`)
+            throw new Error(`Cannot get weapons ${err}`)
         }
        
     }

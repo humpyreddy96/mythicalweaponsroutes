@@ -1,5 +1,6 @@
 import express, {request, Request,Response} from 'express'
 import {Weapon, MythicalWeaponStore} from '../models/mythical_weapon'
+import verifyAuthToken from './verifyAuthToken'
 
 const store = new MythicalWeaponStore()
 
@@ -14,13 +15,13 @@ const show = async (req: Request, res: Response) => {
  }
 
  const create = async (req: Request, res: Response) => {
-    try {
-        const weapon: Weapon = {
-            name: req.body.name,
-            type: req.body.type,
-            weight:req.body.weight
-        }
 
+    const weapon: Weapon = {
+        name: req.body.name,
+        type: req.body.type,
+        weight:req.body.weight
+}
+    try {
         const newArticle = await store.create(weapon)
         res.json(newArticle)
     } catch(err) {
@@ -54,7 +55,7 @@ const destroy = async (req: Request, res: Response) => {
 const mythical_weapon_routes = (app: express.Application) => {
     app.get('/products',index)
     app.get('/products/:id',show)
-    app.post('/products', create)
+    app.post('/products',verifyAuthToken, create)
   app.delete('/products', destroy)
   app.patch('/products',update)
 }
