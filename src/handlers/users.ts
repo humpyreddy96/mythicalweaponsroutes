@@ -52,22 +52,22 @@ const update = async (req: Request, res: Response) => {
         username: req.body.username,
         password: req.body.password,
     }
-    // try {
-    //     const authorizationHeader = req.headers.authorization!
-    //     const token = authorizationHeader.split(' ')[1]
-    //     console.log(token)
+    try {
+        const authorizationHeader = req.headers.authorization!
+        const token = authorizationHeader.split(' ')[1]
+        console.log(token)
 
-    //     const decoded = jwt.verify(token, process.env.TOKEN_SECRET!)
-    //     //@ts-ignore
-    //     if(decoded.id !== user.id) {
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET!)
+        //@ts-ignore
+        if(decoded.id !== user.id) {
             
-    //         throw new Error('User id does not match!')
-    //     }
-    // } catch(err) {
-    //     res.status(401)
-    //     res.json(err)
-    //     return
-    // }
+            throw new Error('User id does not match!')
+        }
+    } catch(err) {
+        res.status(401)
+        res.json(err)
+        return
+    }
 
     try {
         const updated = await user_data.update(user)
@@ -82,7 +82,7 @@ const users_routes = (app:express.Application) =>{
     app.get('/users',index)
     app.post('/users',create)
     app.post('/users/authenticate',authenticate)
-    app.post('/users/:id',update)
+    app.patch('/users/:id',verifyAuthToken,update)
     
 }
 

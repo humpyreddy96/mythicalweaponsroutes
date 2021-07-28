@@ -53,11 +53,11 @@ const destroy = async (req: Request, res: Response) => {
 
 
 const mythical_weapon_routes = (app: express.Application) => {
-    app.get('/products',index)
-    app.get('/products/:id',show)
-    app.post('/products',verifyAuthToken, create)
-  app.delete('/products', destroy)
-  app.patch('/products',update)
+    app.get('/weapons',index)
+    app.get('/weapons/:id',show)
+    app.post('/weapons',verifyAuthToken, create)
+  app.delete('/weapons', destroy)
+  app.patch('/weapons',update)
 }
 
 export default mythical_weapon_routes
