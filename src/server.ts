@@ -4,6 +4,7 @@ import mythical_weapon_routes from './handlers/mythical_weapons'
 import users_routes from './handlers/users'
 import order_routes from './handlers/order'
 import product_routes from './handlers/product'
+import dashboardRoutes from './handlers/dashboard'
 
 const app: express.Application = express()
 const address: string = "0.0.0.0:3000"
@@ -18,6 +19,7 @@ mythical_weapon_routes(app)
 users_routes(app)
 order_routes(app)
 product_routes(app)
+dashboardRoutes(app)
 
 app.listen(3000, function () {
     console.log(`starting app on: ${address}`)
